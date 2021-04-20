@@ -1,0 +1,13 @@
+name = "ClipData"
+uuid = "39db22c5-8506-4ef9-b8dc-9d8ef5f2b71d"
+authors = ["Peter Deffebach <p.deffebach@gmail.com> and contributors"]
+version = "0.1.0"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
