@@ -4,14 +4,34 @@ using CSV, Tables
 
 using InteractiveUtils: clipboard
 
-export tableclip, arrayclip, tablemwe, arraymwe
+export cliptable, cliparray, tablemwe, arraymwe
 
-#  Clipboard to object
-function tableclip(;kwargs...)
+"""
+    cliptable(; kwargs...)
+
+Make a table from the clipboard. Returns
+a `CSV.File`, which can then be transformed
+into a `DataFrame` or other Tables.jl-compatible
+object.
+
+`cliptable` auto-detects delimiters, and all keyword arguments are passed
+directly to the `CSV.File` constructor.
+"""
+function cliptable(; kwargs...)
     CSV.File(IOBuffer(clipboard()); kwargs...)
 end
 
-function arrayclip(;kwargs...)
+"""
+    cliparray(; kwargs...)
+
+Make a `Vector` or `Matrix` from the clipboard.
+
+Auto-detects delimiters, and all keyword arguments are passed
+directly to a `CSV.File` constructor. If the returned `CSV.File`
+has one column, `cliparray` returns a `Vector`. Otherwise, it returns
+a `Matrix`.
+"""
+function cliparray(;kwargs...)
     t = CSV.File(IOBuffer(clipboard()); header=false, kwargs...)
     mat = Tables.matrix(t)
     if size(mat, 2) > 1
@@ -22,7 +42,7 @@ function arrayclip(;kwargs...)
 end
 
 # Object to clipboard
-function tableclip(t ;kwargs...)
+function cliptable(t ;kwargs...)
     io = IOBuffer()
     CSV.write(io, t, delim = '\t')
     s = String(take!(io))
@@ -31,7 +51,7 @@ function tableclip(t ;kwargs...)
     return nothing
 end
 
-function arrayclip(t::AbstractArray; kwargs...)
+function cliparray(t::AbstractArray; kwargs...)
     if t isa AbstractVector
         t = reshape(t, :, 1)
     end
@@ -81,7 +101,7 @@ macro tablemwe(t)
 end
 
 function arraymwe(; name="X")
-    t = arrayclip()
+    t = cliparray()
     arraymwe(t, name=name)
 end
 
