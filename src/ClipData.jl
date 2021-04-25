@@ -31,7 +31,7 @@ directly to a `CSV.File` constructor. If the returned `CSV.File`
 has one column, `cliparray` returns a `Vector`. Otherwise, it returns
 a `Matrix`.
 """
-function cliparray(;kwargs...)
+function cliparray(; kwargs...)
     t = CSV.File(IOBuffer(clipboard()); header=false, kwargs...)
     mat = Tables.matrix(t)
     if size(mat, 2) > 1
@@ -41,22 +41,36 @@ function cliparray(;kwargs...)
     end
 end
 
-# Object to clipboard
-function cliptable(t ;kwargs...)
+"""
+   cliptable(t; delim = '\t', kwargs...)
+
+Send a Tables.jl-compatible object to the clipboard.
+Default delimiter is tab. Accepts all keyword arguments
+that can be pased to `CSV.write`.
+"""
+function cliptable(t; delim = '\t', kwargs...)
     io = IOBuffer()
-    CSV.write(io, t, delim = '\t')
+    CSV.write(io, t, delim = delim, kwargs...)
     s = String(take!(io))
     clipboard(s)
     println(s)
     return nothing
 end
 
-function cliparray(t::AbstractArray; kwargs...)
+"""
+    cliparray(t::AbstractVecOrMat; kwargs...)
+
+Send a `Vector` or `Matrix` to the clipboard.
+Default delimiter is tab and with no header.
+Accepts all keyword arguments that can be passed
+to `CSV.write`.
+"""
+function cliparray(t::AbstractVecOrMat; delim='\t', header=false, kwargs...)
     if t isa AbstractVector
         t = reshape(t, :, 1)
     end
     io = IOBuffer()
-    CSV.write(io, Tables.table(t); delim = '\t', header=false)
+    CSV.write(io, Tables.table(t); delim=delim, header=header, kwargs...)
     s = String(take!(io))
     clipboard(s)
     println(s)
