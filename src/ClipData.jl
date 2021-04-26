@@ -104,22 +104,20 @@ a   b
 1   100
 2   200
 3   300
-
-
-julia> cliptable()
-3-element CSV.File{false}:
- CSV.Row: (a = 1, b = 100)
- CSV.Row: (a = 2, b = 200)
- CSV.Row: (a = 3, b = 300)
 ```
 """
-function cliptable(t; delim = '\t', kwargs...)
+function cliptable(t; returnstring = false, delim = '\t', kwargs...)
     io = IOBuffer()
     CSV.write(io, t, delim = delim, kwargs...)
-    s = String(take!(io))
+    s = chop(String(take!(io)), tail = 1)
     clipboard(s)
     println(s)
-    return nothing
+
+    if returnstring == true
+      return s
+    else
+      return nothing
+    end
 end
 
 """
@@ -142,19 +140,24 @@ julia> cliparray()
 2×2 Matrix{Int64}:
  1  2
  3  4
-
 ```
 """
-function cliparray(t::AbstractVecOrMat; delim='\t', header=false, kwargs...)
+function cliparray(t::AbstractVecOrMat; returnstring = false, delim='\t',
+                   header=false, kwargs...)
     if t isa AbstractVector
         t = reshape(t, :, 1)
     end
     io = IOBuffer()
     CSV.write(io, Tables.table(t); delim=delim, header=header, kwargs...)
-    s = String(take!(io))
+    s = chop(String(take!(io)), tail = 1)
     clipboard(s)
     println(s)
-    return nothing
+
+    if returnstring == true
+      return s
+    else
+      return nothing
+    end
 end
 
 """
@@ -185,9 +188,9 @@ a,b
 ```
 
 """
-function tablemwe(; name="df")
+function tablemwe(; returnstring=false, name="df")
     t = cliptable()
-    tablemwe(t, name=name)
+    tablemwe(t, returnstring=returnstring, name=name)
 end
 
 """
@@ -216,7 +219,7 @@ a,b
 \"\"\" |> IOBuffer |> CSV.File
 ```
 """
-function tablemwe(t; name="df")
+function tablemwe(t; returnstring=false, name="df")
     main_io = IOBuffer()
     table_io = IOBuffer()
 
@@ -229,13 +232,16 @@ $name = \"\"\"
     print(main_io, String(take!(table_io)))
 
     end_str = """
-\"\"\" |> IOBuffer |> CSV.File
-"""
-    println(main_io, end_str)
+\"\"\" |> IOBuffer |> CSV.File"""
+    print(main_io, end_str)
     s = String(take!(main_io))
     println(s)
-    clipboard(s)
-    return nothing
+
+    if returnstring == true
+      return s
+    else
+      return nothing
+    end
 end
 
 function tablemwe_helper(t::Symbol)
@@ -297,9 +303,10 @@ X = \"\"\"
 \"\"\" |> IOBuffer |> CSV.File |> Tables.matrix
 ```
 """
-function arraymwe(; name=:X)
+function arraymwe(; returnstring=false, name=nothing)
     t = cliparray()
-    arraymwe(t, name=name)
+    name= t isa AbstractVector ? :x : :X
+    arraymwe(t, returnstring=returnstring, name=name)
 end
 
 """
@@ -325,7 +332,7 @@ X = \"\"\"
 \"\"\" |> IOBuffer |> CSV.File |> Tables.matrix
 ```
 """
-function arraymwe(t::AbstractMatrix; name=:X)
+function arraymwe(t::AbstractMatrix; returnstring=false, name=:X)
     main_io = IOBuffer()
     array_io = IOBuffer()
 
@@ -338,13 +345,16 @@ $name = \"\"\"
     print(main_io, String(take!(array_io)))
 
     end_str = """
-\"\"\" |> IOBuffer |> CSV.File |> Tables.matrix
-"""
-    println(main_io, end_str)
+\"\"\" |> IOBuffer |> CSV.File |> Tables.matrix"""
+    print(main_io, end_str)
     s = String(take!(main_io))
     println(s)
-    clipboard(s)
-    return nothing
+
+    if returnstring == true
+      return s
+    else
+      return nothing
+    end
 end
 
 """
@@ -367,7 +377,7 @@ x = \"\"\"
 \"\"\" |> IOBuffer |> CSV.File |> Tables.matrix |> vec
 ```
 """
-function arraymwe(t::AbstractVector; name=:x)
+function arraymwe(t::AbstractVector; returnstring=false, name=:x)
     main_io = IOBuffer()
     array_io = IOBuffer()
 
@@ -382,13 +392,16 @@ $name = \"\"\"
     print(main_io, String(take!(array_io)))
 
     end_str = """
-\"\"\" |> IOBuffer |> CSV.File |> Tables.matrix |> vec
-"""
-    println(main_io, end_str)
+\"\"\" |> IOBuffer |> CSV.File |> Tables.matrix |> vec"""
+    print(main_io, end_str)
     s = String(take!(main_io))
     println(s)
-    clipboard(s)
-    return nothing
+
+    if returnstring == true
+      return s
+    else
+      return nothing
+    end
 end
 
 function arraymwe_helper(t::Symbol)
