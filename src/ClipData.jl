@@ -116,7 +116,7 @@ julia> cliptable()
 function cliptable(t; delim = '\t', kwargs...)
     io = IOBuffer()
     CSV.write(io, t, delim = delim, kwargs...)
-    s = String(take!(io))
+    s = chop(String(take!(io)), tail = 1)
     clipboard(s)
     println(s)
     return nothing
@@ -151,7 +151,7 @@ function cliparray(t::AbstractVecOrMat; delim='\t', header=false, kwargs...)
     end
     io = IOBuffer()
     CSV.write(io, Tables.table(t); delim=delim, header=header, kwargs...)
-    s = String(take!(io))
+    s = chop(String(take!(io)), tail = 1)
     clipboard(s)
     println(s)
     return nothing
@@ -234,7 +234,6 @@ $name = \"\"\"
     println(main_io, end_str)
     s = String(take!(main_io))
     println(s)
-    clipboard(s)
     return nothing
 end
 
@@ -343,7 +342,6 @@ $name = \"\"\"
     println(main_io, end_str)
     s = String(take!(main_io))
     println(s)
-    clipboard(s)
     return nothing
 end
 
@@ -387,7 +385,6 @@ $name = \"\"\"
     println(main_io, end_str)
     s = String(take!(main_io))
     println(s)
-    clipboard(s)
     return nothing
 end
 
