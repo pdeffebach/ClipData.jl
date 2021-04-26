@@ -4,7 +4,7 @@ using CSV, Tables
 
 using InteractiveUtils: clipboard
 
-export cliptable, cliparray, tablemwe, arraymwe
+export cliptable, cliparray, tablemwe, arraymwe, @tablemwe, @arraymwe
 
 """
     cliptable(; kwargs...)
@@ -14,8 +14,26 @@ a `CSV.File`, which can then be transformed
 into a `DataFrame` or other Tables.jl-compatible
 object.
 
-`cliptable` auto-detects delimiters, and all keyword arguments are passed
-directly to the `CSV.File` constructor.
+`cliptable` auto-detects delimiters, and all keyword
+arguments are passed directly to the `CSV.File`
+constructor.
+
+## Examples
+
+```Julia
+julia> # Send string to the clipboard
+       \"\"\"
+       a, b
+       1, 2
+       100, 200
+       \"\"\" |> clipboard
+
+julia> cliptable()
+2-element CSV.File{false}:
+ CSV.Row: (a = 1,  b = 2)
+ CSV.Row: (a = 100,  b = 200)
+```
+
 """
 function cliptable(; kwargs...)
     CSV.File(IOBuffer(clipboard()); kwargs...)
@@ -25,11 +43,38 @@ end
     cliparray(; kwargs...)
 
 Make a `Vector` or `Matrix` from the clipboard.
-
 Auto-detects delimiters, and all keyword arguments are passed
 directly to a `CSV.File` constructor. If the returned `CSV.File`
 has one column, `cliparray` returns a `Vector`. Otherwise, it returns
 a `Matrix`.
+
+# Examples
+
+julia> # Send string to clipboard
+       \"\"\"
+       1 2
+       3 4
+       \"\"\" |> clipboard
+
+julia> cliparray()
+2×2 Matrix{Int64}:
+ 1  2
+ 3  4
+
+julia> \"\"\"
+       1
+       2
+       3
+       4
+       \"\"\" |> clipboard
+
+julia> cliparray()
+4-element Vector{Int64}:
+ 1
+ 2
+ 3
+ 4
+
 """
 function cliparray(; kwargs...)
     t = CSV.File(IOBuffer(clipboard()); header=false, kwargs...)
@@ -42,11 +87,31 @@ function cliparray(; kwargs...)
 end
 
 """
-   cliptable(t; delim = '\t', kwargs...)
+    cliptable(t; delim = , kwargs...)
 
 Send a Tables.jl-compatible object to the clipboard.
 Default delimiter is tab. Accepts all keyword arguments
 that can be pased to `CSV.write`.
+
+# Example
+
+```julia
+julia> t = (a = [1, 2, 3], b = [100, 200, 300])
+(a = [1, 2, 3], b = [100, 200, 300])
+
+julia> cliptable(t)
+a   b
+1   100
+2   200
+3   300
+
+
+julia> cliptable()
+3-element CSV.File{false}:
+ CSV.Row: (a = 1, b = 100)
+ CSV.Row: (a = 2, b = 200)
+ CSV.Row: (a = 3, b = 300)
+```
 """
 function cliptable(t; delim = '\t', kwargs...)
     io = IOBuffer()
@@ -64,6 +129,21 @@ Send a `Vector` or `Matrix` to the clipboard.
 Default delimiter is tab and with no header.
 Accepts all keyword arguments that can be passed
 to `CSV.write`.
+
+# Examples
+
+```julia
+julia> \"\"\"
+       1 2
+       3 4
+       \"\"\" |> clipboard
+
+julia> cliparray()
+2×2 Matrix{Int64}:
+ 1  2
+ 3  4
+
+```
 """
 function cliparray(t::AbstractVecOrMat; delim='\t', header=false, kwargs...)
     if t isa AbstractVector
@@ -77,12 +157,65 @@ function cliparray(t::AbstractVecOrMat; delim='\t', header=false, kwargs...)
     return nothing
 end
 
-# Clipboard to MWE
+"""
+    tablemwe(; name="df")
+
+Create a Minimum Working Example (MWE) using
+the clipboard. `tablmwe` prints out a multi-line
+comma-separated string and provides the necessary
+code to read that string using `CSV.File`.
+The object is assigned the name given by
+`name` (default `"df"`).
+
+# Examples
+
+```julia
+julia> \"\"\"
+       a b
+       1 2
+       100 200
+       \"\"\" |> clipboard
+
+julia> tablemwe()
+df = \"\"\"
+a,b
+1,2
+100,200
+\"\"\" |> IOBuffer |> CSV.File
+```
+
+"""
 function tablemwe(; name="df")
-    t = cliptotable()
-    tabletomwe(t, name)
+    t = cliptable()
+    tablemwe(t, name=name)
 end
 
+"""
+    tablemwe(t; name="df")
+
+Create a Minimum Working Example (MWE) from
+an existing Tables.jl-compatible object.
+`tablmwe` prints out a multi-line
+comma-separated string and provides the necessary
+code to read that string using `CSV.File`.
+The object is assigned the name given by
+`name` (default `:df`).
+
+# Examples
+
+```julia
+julia> t = (a = [1, 2, 3], b = [100, 200, 300])
+(a = [1, 2, 3], b = [100, 200, 300])
+
+julia> tablemwe(t)
+df = \"\"\"
+a,b
+1,100
+2,200
+3,300
+\"\"\" |> IOBuffer |> CSV.File
+```
+"""
 function tablemwe(t; name="df")
     main_io = IOBuffer()
     table_io = IOBuffer()
@@ -106,20 +239,93 @@ $name = \"\"\"
 end
 
 function tablemwe_helper(t::Symbol)
-    t = string(t)
-    :(tabletomwe($t, $t_name))
+    t_name = QuoteNode(t)
+    :(tablemwe($t, name = $t_name))
 end
 
+"""
+    @tablemwe(t)
+
+Create a Minimum Working Example (MWE) from
+an existing Tables.jl-compatible object.
+`tablmwe` prints out a multi-line
+comma-separated string and provides the necessary
+code to read that string using `CSV.File`. The name
+assigned to the object in the MWE is the
+same as the name of the input object.
+
+# Examples
+
+```julia
+julia> my_special_table = (a = [1, 2, 3], b = [100, 200, 300])
+(a = [1, 2, 3], b = [100, 200, 300])
+
+julia> @tablemwe my_special_table
+my_special_table = \"\"\"
+a,b
+1,100
+2,200
+3,300
+\"\"\" |> IOBuffer |> CSV.File
+```
+"""
 macro tablemwe(t)
-    esc(tabletomwe_helper(t))
+    esc(tablemwe_helper(t))
 end
 
-function arraymwe(; name="X")
+"""
+    arraymwe(; name=:X)
+
+Create a Minimum Working Example (MWE) from
+the clipboard to create an array. `arraymwe`
+returns the a multi-line string with the
+code necessary to read the string stored in
+clipboard as a `Vector` or `Matrix`.
+
+# Examples
+
+```julia
+julia> \"\"\"
+       1 2
+       3 4
+       \"\"\" |> clipboard
+
+julia> arraymwe()
+X = \"\"\"
+1,2
+3,4
+\"\"\" |> IOBuffer |> CSV.File |> Tables.matrix
+```
+"""
+function arraymwe(; name=:X)
     t = cliparray()
     arraymwe(t, name=name)
 end
 
-function arraymwe(t::AbstractMatrix; name="X")
+"""
+    arraymwe(t::AbstractMatrix; name=:X)
+
+Create a Minimum Working Example (MWE) from
+a `Matrix`. `arraymwe`
+returns the a multi-line string with the
+code necessary to recreate `t`.
+
+# Examples
+
+```julia
+julia> X = [1 2; 3 4]
+2×2 Matrix{Int64}:
+ 1  2
+ 3  4
+
+julia> arraymwe(X)
+X = \"\"\"
+1,2
+3,4
+\"\"\" |> IOBuffer |> CSV.File |> Tables.matrix
+```
+"""
+function arraymwe(t::AbstractMatrix; name=:X)
     main_io = IOBuffer()
     array_io = IOBuffer()
 
@@ -141,7 +347,27 @@ $name = \"\"\"
     return nothing
 end
 
-function arraymwe(t::AbstractVector; name="x")
+"""
+    arraymwe(t::AbstractVector; name=:x)
+
+Create a Minimum Working Example (MWE) from
+a `Vector`. `arraymwe`
+returns the a multi-line string with the
+code necessary to recreate `t`.
+
+# Example
+
+```julia
+julia> arraymwe(x; name=:x)
+x = \"\"\"
+1
+2
+3
+4
+\"\"\" |> IOBuffer |> CSV.File |> Tables.matrix |> vec
+```
+"""
+function arraymwe(t::AbstractVector; name=:x)
     main_io = IOBuffer()
     array_io = IOBuffer()
 
@@ -166,12 +392,34 @@ $name = \"\"\"
 end
 
 function arraymwe_helper(t::Symbol)
-    t = string(t)
-    :(arraytomwe($t, $t_name))
+    t_name = QuoteNode(t)
+    :(arraymwe($t, name=$t_name))
 end
 
+"""
+    arraymwe(t)
+
+Create a Minimum Working Example (MWE)
+from a `Vector` or `Matrix` with the same
+name as the object in the Julia session.
+
+# Examples
+
+```julia
+julia> my_special_matrix = [1 2; 3 4]
+2×2 Matrix{Int64}:
+ 1  2
+ 3  4
+
+julia> @arraymwe my_special_matrix
+my_special_matrix = \"\"\"
+1,2
+3,4
+\"\"\" |> IOBuffer |> CSV.File |> Tables.matrix
+```
+"""
 macro arraymwe(t)
-    esc(arraytomwe_helper(t))
+    esc(arraymwe_helper(t))
 end
 
 end
