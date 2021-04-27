@@ -410,7 +410,7 @@ function arraymwe_helper(t::Symbol)
 end
 
 """
-    arraymwe(t)
+    @arraymwe(t)
 
 Create a Minimum Working Example (MWE)
 from a `Vector` or `Matrix` with the same
