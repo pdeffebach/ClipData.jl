@@ -20,7 +20,7 @@ constructor.
 
 ## Examples
 
-```Julia
+```julia-repl
 julia> # Send string to the clipboard
        \"\"\"
        a, b
@@ -50,6 +50,7 @@ a `Matrix`.
 
 # Examples
 
+```julia-repl
 julia> # Send string to clipboard
        \"\"\"
        1 2
@@ -74,7 +75,7 @@ julia> cliparray()
  2
  3
  4
-
+```
 """
 function cliparray(; kwargs...)
     t = CSV.File(IOBuffer(clipboard()); header=false, kwargs...)
@@ -95,7 +96,7 @@ that can be pased to `CSV.write`.
 
 # Example
 
-```julia
+```julia-repl
 julia> t = (a = [1, 2, 3], b = [100, 200, 300])
 (a = [1, 2, 3], b = [100, 200, 300])
 
@@ -130,7 +131,7 @@ to `CSV.write`.
 
 # Examples
 
-```julia
+```julia-repl
 julia> \"\"\"
        1 2
        3 4
@@ -172,7 +173,7 @@ The object is assigned the name given by
 
 # Examples
 
-```julia
+```julia-repl
 julia> \"\"\"
        a b
        1 2
@@ -206,7 +207,7 @@ The object is assigned the name given by
 
 # Examples
 
-```julia
+```julia-repl
 julia> t = (a = [1, 2, 3], b = [100, 200, 300])
 (a = [1, 2, 3], b = [100, 200, 300])
 
@@ -262,7 +263,7 @@ same as the name of the input object.
 
 # Examples
 
-```julia
+```julia-repl
 julia> my_special_table = (a = [1, 2, 3], b = [100, 200, 300])
 (a = [1, 2, 3], b = [100, 200, 300])
 
@@ -290,7 +291,7 @@ clipboard as a `Vector` or `Matrix`.
 
 # Examples
 
-```julia
+```julia-repl
 julia> \"\"\"
        1 2
        3 4
@@ -319,7 +320,7 @@ code necessary to recreate `t`.
 
 # Examples
 
-```julia
+```julia-repl
 julia> X = [1 2; 3 4]
 2×2 Matrix{Int64}:
  1  2
@@ -367,7 +368,7 @@ code necessary to recreate `t`.
 
 # Example
 
-```julia
+```julia-repl
 julia> arraymwe(x; name=:x)
 x = \"\"\"
 1
@@ -418,7 +419,7 @@ name as the object in the Julia session.
 
 # Examples
 
-```julia
+```julia-repl
 julia> my_special_matrix = [1 2; 3 4]
 2×2 Matrix{Int64}:
  1  2
