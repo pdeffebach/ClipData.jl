@@ -23,8 +23,8 @@ ClipData uses [CSV.jl](https://csv.juliadata.org/stable/) under the hood for fas
 
 ## `cliptable` for matrix or vector data
 
-- `cliptable()` will copy data from the clipboard into a Julia array.
-- `cliptable(data)` will copy the Julia variable `data` to the clipboard
+- `cliparray()` will copy data from the clipboard into a Julia array.
+- `cliparray(data)` will copy the Julia variable `data` to the clipboard
 
 ```@raw html
 <video controls width="680">

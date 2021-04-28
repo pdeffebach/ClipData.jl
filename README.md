@@ -17,8 +17,8 @@ https://user-images.githubusercontent.com/711879/116339390-f44a9080-a7a2-11eb-9e
 
 ## `cliptable` for matrix or vector data
 
-- `cliptable()` will copy data from the clipboard into a Julia array.
-- `cliptable(data)` will copy the Julia variable `data` to the clipboard
+- `cliparray()` will copy data from the clipboard into a Julia array.
+- `cliparray(data)` will copy the Julia variable `data` to the clipboard
 
 
 https://user-images.githubusercontent.com/711879/116340294-8c954500-a7a4-11eb-9159-cc9dc3fda80a.mp4
