@@ -4,14 +4,12 @@ Copy/paste to/from Excel, Google Sheets, and other tabular data sources into int
 
 Interactive Julia sessions include the REPL, Pluto notebooks, Jupyter notebooks, and more!
 
-## Powerful convienience
-
 ClipData uses [CSV.jl](https://csv.juliadata.org/stable/) under the hood for fast and flexible parsing of tabular data on the clipboard. 
 
 ## `cliptable` for data with headers
 
 - `cliptable()` will copy data from the clipboard into a `CSV.File`. Pass to a `DataFrame` to create a dataframe object.
-- `cliptable(data)` will copy the julia variable `data` to the clipboard
+- `cliptable(data)` will copy the Julia variable `data` to the clipboard
 
 
 https://user-images.githubusercontent.com/711879/116339390-f44a9080-a7a2-11eb-9e3b-9d4716747bd1.mp4
@@ -20,7 +18,7 @@ https://user-images.githubusercontent.com/711879/116339390-f44a9080-a7a2-11eb-9e
 ## `cliptable` for matrix or vector data
 
 - `cliptable()` will copy data from the clipboard into a Julia array.
-- `cliptable(data)` will copy the julia variable `data` to the clipboard
+- `cliptable(data)` will copy the Julia variable `data` to the clipboard
 
 
 https://user-images.githubusercontent.com/711879/116340294-8c954500-a7a4-11eb-9159-cc9dc3fda80a.mp4
