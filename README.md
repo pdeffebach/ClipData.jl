@@ -35,3 +35,8 @@ This will remove whitespace and standardize headers for tabular data:
 ```julia
 cliptable(;normalizenames=true)
 ```
+
+## `tablemwe` and `arraymwe` for making Minimum Working Examples (MWEs)
+
+CliData also generates code to make it easy to copy and paste data to a script. This is ideal for slowly transitioning a complicated Excel workbook to a more reproducible Julia script. 
+
