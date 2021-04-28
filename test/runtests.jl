@@ -56,6 +56,12 @@ end
     x = [1, 2, 3, 4]
     cliparray(x)
     @test clipboard() == "1\n2\n3\n4"
+
+    """
+    1 2 3 4
+    """ |> clipboard
+
+    @test cliparray() == [1, 2, 3, 4]
 end
 
 @testset "tablemwe" begin

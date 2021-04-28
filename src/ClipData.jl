@@ -80,10 +80,10 @@ julia> cliparray()
 function cliparray(; kwargs...)
     t = CSV.File(IOBuffer(clipboard()); header=false, kwargs...)
     mat = Tables.matrix(t)
-    if size(mat, 2) > 1
-        return mat
-    else
+    if size(mat, 2) == 1 || size(mat, 1) == 1
         return vec(mat)
+    else
+        return mat
     end
 end
 
