@@ -1,5 +1,8 @@
 # ClipData.jl
 
+[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://pdeffebach.github.io/ClipData.jl/stable/)
+
+
 Copy/paste to/from Excel, Google Sheets, and other tabular data sources into interactive Julia sessions. 
 
 Interactive Julia sessions include the REPL, Pluto notebooks, Jupyter notebooks, and more!
