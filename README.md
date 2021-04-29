@@ -38,5 +38,17 @@ cliptable(;normalizenames=true)
 
 ## `tablemwe` and `arraymwe` for making Minimum Working Examples (MWEs)
 
-CliData also generates code to make it easy to copy and paste data to a script. This is ideal for slowly transitioning a complicated Excel workbook to a more reproducible Julia script. 
+ClipData also generates code to make it easy to copy and paste data to a script. This is ideal for slowly transitioning a complicated Excel workbook to a more reproducible Julia script. 
+
+```julia
+tablemwe()
+```
+
+will create copy-and-paste-able code to create a table from the input. 
+
+```julia
+tablemwe(data)
+```
+
+will do the same for existing data. 
 
