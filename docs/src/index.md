@@ -21,7 +21,7 @@ ClipData uses [CSV.jl](https://csv.juliadata.org/stable/) under the hood for fas
 
 
 
-## `cliptable` for matrix or vector data
+## `cliparray` for matrix or vector data
 
 - `cliparray()` will copy data from the clipboard into a Julia array.
 - `cliparray(data)` will copy the Julia variable `data` to the clipboard
@@ -36,7 +36,7 @@ ClipData uses [CSV.jl](https://csv.juliadata.org/stable/) under the hood for fas
 
 ## Keyword arguments
 
-Keyword arguments passed to `cliptable` or `cliparray` will be passed to CSV.jl, so you can customize the behavior of the data "pasted" to Julia. See the [CSV.jl docs]([CSV.jl](https://csv.juliadata.org/stable/) for more info.
+Keyword arguments passed to `cliptable` or `cliparray` will be passed to CSV.jl, so you can customize the behavior of the data "pasted" to Julia. See the [CSV.jl docs](https://csv.juliadata.org/stable/) for more info.
 
 ### Example
 
