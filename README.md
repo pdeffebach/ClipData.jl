@@ -36,19 +36,13 @@ This will remove whitespace and standardize headers for tabular data:
 cliptable(;normalizenames=true)
 ```
 
-## `tablemwe` and `arraymwe` for making Minimum Working Examples (MWEs)
+## `tablemwe` and `arraymwe` for Minimum Working Examples 
 
 ClipData also generates code to make it easy to copy and paste data to a script. This is ideal for slowly transitioning a complicated Excel workbook to a more reproducible Julia script. 
 
-```julia
-tablemwe()
-```
+- `tablemwe()` will create copy-and-pasteable code to construct a Julia table from the clipboard.
+- `tablemwe(data)` will do the same from an existing Julia object. 
 
-will create copy-and-paste-able code to create a table from the input. 
+You can also create Minimum Working Examples with arrays through the function `arraymwe`. 
 
-```julia
-tablemwe(data)
-```
-
-will do the same for existing data. 
 
