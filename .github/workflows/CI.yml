@@ -13,7 +13,6 @@ jobs:
           - '1.0'
           - '1.6'
         os:
-          - ubuntu-latest
           - macOS-latest
           - windows-latest
         arch:
