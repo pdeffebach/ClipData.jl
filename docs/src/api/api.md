@@ -9,18 +9,18 @@ cliparray
 ```
 
 ```@docs
-tablemwe
+mwetable
 ```
 
 ```@docs
-arraymwe
+mwearray
 ```
 
 ```@docs
-@tablemwe
+@mwetable
 ```
 
 ```@docs
-@arraymwe
+@mwearray
 ```
 

@@ -64,14 +64,14 @@ end
     @test cliparray() == [1, 2, 3, 4]
 end
 
-@testset "tablemwe" begin
+@testset "mwetable" begin
     """
     a b
     1 2
     3 4
     """ |> clipboard
 
-    s = tablemwe(; returnstring=true)
+    s = mwetable(; returnstring=true)
     s_correct =
 """
 df = \"\"\"
@@ -84,18 +84,18 @@ a,b
 
 
     t = (a = [1, 3], b = [2, 4])
-    s = tablemwe(t; returnstring = true)
+    s = mwetable(t; returnstring = true)
 
     @test s == s_correct
 end
 
-@testset "arraymwe" begin
+@testset "mwearray" begin
     """
     1 2
     3 4
     """ |> clipboard
 
-    s = arraymwe(; returnstring=true)
+    s = mwearray(; returnstring=true)
     s_correct =
 """
 X = \"\"\"
@@ -107,7 +107,7 @@ X = \"\"\"
 
 
     t = [1 2; 3 4]
-    s = arraymwe(t; returnstring = true)
+    s = mwearray(t; returnstring = true)
 
     @test s == s_correct
 
@@ -118,7 +118,7 @@ X = \"\"\"
     4
     """ |> clipboard
 
-    s = arraymwe(; returnstring=true)
+    s = mwearray(; returnstring=true)
 
     s_correct =
 """
@@ -133,30 +133,30 @@ x = \"\"\"
 
     x = [1, 2, 3, 4]
 
-    s = arraymwe(x; returnstring=true)
+    s = mwearray(x; returnstring=true)
     @test s == s_correct
 end
 
-@testset "@tablemwe" begin
+@testset "@mwetable" begin
     # Can't think of a way to test. Just check
     # for errors.
 
     mytable = (a = [1, 2], b = [3, 4])
 
-    @tablemwe mytable
+    @mwetable mytable
 end
 
-@testset "@arraymwe" begin
+@testset "@mwearray" begin
     # Can't think of a way to test. Just check
     # for errors.
 
     myarray = [1 2; 3 4]
 
-    @arraymwe myarray
+    @mwearray myarray
 
     myvector = [1, 2, 3, 4]
 
-    @arraymwe myvector
+    @mwearray myvector
 end
 
 
