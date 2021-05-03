@@ -46,13 +46,13 @@ This will remove whitespace and standardize headers for tabular data:
 cliptable(;normalizenames=true)
 ```
 
-## `tablemwe` and `arraymwe` for creating Minimum Working Examples (MWEs)
+## `mwetable` and `mwearray` for creating Minimum Working Examples (MWEs)
 
-ClipData also makes it easy to take data from a the clipboard or a Julia session and enter it directly int a script with the functions `tablemwe` and `arraymwe`, as well as the corresponding macros `@tablemwe` and `@arraymwe`.
+ClipData also makes it easy to take data from a the clipboard or a Julia session and enter it directly int a script with the functions `mwetable` and `mwearray`, as well as the corresponding macros `@mwetable` and `@mwearray`.
 
 ### Example
 
-Say you have an existing data frame with the population of cities on the West Coast of the USA, and you want to share this data with someone without sending an Excel file. `tablemwe` allows you to create reproducible code on the fly. 
+Say you have an existing data frame with the population of cities on the West Coast of the USA, and you want to share this data with someone without sending an Excel file. `mwetable` allows you to create reproducible code on the fly. 
 
 ```julia
 julia> west_coast_cities
@@ -66,7 +66,7 @@ julia> west_coast_cities
    4 │ Los Angeles       3967000
    5 │ San Diego         1410000
 
-julia> @tablemwe west_coast_cities
+julia> @mwetable west_coast_cities
 west_coast_cities = """
 City,Population
 Portland,645291
@@ -79,4 +79,4 @@ San Diego,1410000
 
 !!! note 
 
-    `tablemwe` always returns a `CSV.File` object, but this can be easily converted into whatever table type you are working with.
+    `mwetable` always returns a `CSV.File` object, but this can be easily converted into whatever table type you are working with.

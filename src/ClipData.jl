@@ -4,7 +4,7 @@ using CSV, Tables
 
 using InteractiveUtils: clipboard
 
-export cliptable, cliparray, tablemwe, arraymwe, @tablemwe, @arraymwe
+export cliptable, cliparray, mwetable, mwearray, @mwetable, @mwearray
 
 """
     cliptable(; kwargs...)
@@ -162,7 +162,7 @@ function cliparray(t::AbstractVecOrMat; returnstring = false, delim='\t',
 end
 
 """
-    tablemwe(; name="df")
+    mwetable(; name="df")
 
 Create a Minimum Working Example (MWE) using
 the clipboard. `tablmwe` prints out a multi-line
@@ -180,7 +180,7 @@ julia> \"\"\"
        100 200
        \"\"\" |> clipboard
 
-julia> tablemwe()
+julia> mwetable()
 df = \"\"\"
 a,b
 1,2
@@ -189,13 +189,13 @@ a,b
 ```
 
 """
-function tablemwe(; returnstring=false, name="df")
+function mwetable(; returnstring=false, name="df")
     t = cliptable()
-    tablemwe(t, returnstring=returnstring, name=name)
+    mwetable(t, returnstring=returnstring, name=name)
 end
 
 """
-    tablemwe(t; name="df")
+    mwetable(t; name="df")
 
 Create a Minimum Working Example (MWE) from
 an existing Tables.jl-compatible object.
@@ -211,7 +211,7 @@ The object is assigned the name given by
 julia> t = (a = [1, 2, 3], b = [100, 200, 300])
 (a = [1, 2, 3], b = [100, 200, 300])
 
-julia> tablemwe(t)
+julia> mwetable(t)
 df = \"\"\"
 a,b
 1,100
@@ -220,7 +220,7 @@ a,b
 \"\"\" |> IOBuffer |> CSV.File
 ```
 """
-function tablemwe(t; returnstring=false, name="df")
+function mwetable(t; returnstring=false, name="df")
     main_io = IOBuffer()
     table_io = IOBuffer()
 
@@ -245,13 +245,13 @@ $name = \"\"\"
     end
 end
 
-function tablemwe_helper(t::Symbol)
+function mwetable_helper(t::Symbol)
     t_name = QuoteNode(t)
-    :(tablemwe($t, name = $t_name))
+    :(mwetable($t, name = $t_name))
 end
 
 """
-    @tablemwe(t)
+    @mwetable(t)
 
 Create a Minimum Working Example (MWE) from
 an existing Tables.jl-compatible object.
@@ -267,7 +267,7 @@ same as the name of the input object.
 julia> my_special_table = (a = [1, 2, 3], b = [100, 200, 300])
 (a = [1, 2, 3], b = [100, 200, 300])
 
-julia> @tablemwe my_special_table
+julia> @mwetable my_special_table
 my_special_table = \"\"\"
 a,b
 1,100
@@ -276,15 +276,15 @@ a,b
 \"\"\" |> IOBuffer |> CSV.File
 ```
 """
-macro tablemwe(t)
-    esc(tablemwe_helper(t))
+macro mwetable(t)
+    esc(mwetable_helper(t))
 end
 
 """
-    arraymwe(; name=:X)
+    mwearray(; name=:X)
 
 Create a Minimum Working Example (MWE) from
-the clipboard to create an array. `arraymwe`
+the clipboard to create an array. `mwearray`
 returns the a multi-line string with the
 code necessary to read the string stored in
 clipboard as a `Vector` or `Matrix`.
@@ -297,24 +297,24 @@ julia> \"\"\"
        3 4
        \"\"\" |> clipboard
 
-julia> arraymwe()
+julia> mwearray()
 X = \"\"\"
 1,2
 3,4
 \"\"\" |> IOBuffer |> CSV.File |> Tables.matrix
 ```
 """
-function arraymwe(; returnstring=false, name=nothing)
+function mwearray(; returnstring=false, name=nothing)
     t = cliparray()
     name= t isa AbstractVector ? :x : :X
-    arraymwe(t, returnstring=returnstring, name=name)
+    mwearray(t, returnstring=returnstring, name=name)
 end
 
 """
-    arraymwe(t::AbstractMatrix; name=:X)
+    mwearray(t::AbstractMatrix; name=:X)
 
 Create a Minimum Working Example (MWE) from
-a `Matrix`. `arraymwe`
+a `Matrix`. `mwearray`
 returns the a multi-line string with the
 code necessary to recreate `t`.
 
@@ -326,14 +326,14 @@ julia> X = [1 2; 3 4]
  1  2
  3  4
 
-julia> arraymwe(X)
+julia> mwearray(X)
 X = \"\"\"
 1,2
 3,4
 \"\"\" |> IOBuffer |> CSV.File |> Tables.matrix
 ```
 """
-function arraymwe(t::AbstractMatrix; returnstring=false, name=:X)
+function mwearray(t::AbstractMatrix; returnstring=false, name=:X)
     main_io = IOBuffer()
     array_io = IOBuffer()
 
@@ -359,17 +359,17 @@ $name = \"\"\"
 end
 
 """
-    arraymwe(t::AbstractVector; name=:x)
+    mwearray(t::AbstractVector; name=:x)
 
 Create a Minimum Working Example (MWE) from
-a `Vector`. `arraymwe`
+a `Vector`. `mwearray`
 returns the a multi-line string with the
 code necessary to recreate `t`.
 
 # Example
 
 ```julia-repl
-julia> arraymwe(x; name=:x)
+julia> mwearray(x; name=:x)
 x = \"\"\"
 1
 2
@@ -378,7 +378,7 @@ x = \"\"\"
 \"\"\" |> IOBuffer |> CSV.File |> Tables.matrix |> vec
 ```
 """
-function arraymwe(t::AbstractVector; returnstring=false, name=:x)
+function mwearray(t::AbstractVector; returnstring=false, name=:x)
     main_io = IOBuffer()
     array_io = IOBuffer()
 
@@ -405,13 +405,13 @@ $name = \"\"\"
     end
 end
 
-function arraymwe_helper(t::Symbol)
+function mwearray_helper(t::Symbol)
     t_name = QuoteNode(t)
-    :(arraymwe($t, name=$t_name))
+    :(mwearray($t, name=$t_name))
 end
 
 """
-    @arraymwe(t)
+    @mwearray(t)
 
 Create a Minimum Working Example (MWE)
 from a `Vector` or `Matrix` with the same
@@ -425,15 +425,15 @@ julia> my_special_matrix = [1 2; 3 4]
  1  2
  3  4
 
-julia> @arraymwe my_special_matrix
+julia> @mwearray my_special_matrix
 my_special_matrix = \"\"\"
 1,2
 3,4
 \"\"\" |> IOBuffer |> CSV.File |> Tables.matrix
 ```
 """
-macro arraymwe(t)
-    esc(arraymwe_helper(t))
+macro mwearray(t)
+    esc(mwearray_helper(t))
 end
 
 end
