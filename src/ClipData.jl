@@ -107,7 +107,7 @@ a   b
 3   300
 ```
 """
-function cliptable(t; returnstring = false, delim = '\t',z kwargs...)
+function cliptable(t; returnstring = false, delim = '\t', kwargs...)
     io = IOBuffer()
     CSV.write(io, t, delim = delim, kwargs...)
     s = chop(String(take!(io)), tail = 1)
