@@ -107,12 +107,11 @@ a   b
 3   300
 ```
 """
-function cliptable(t; returnstring = false, delim = '\t', printstring=false, kwargs...)
+function cliptable(t; returnstring = false, delim = '\t',z kwargs...)
     io = IOBuffer()
     CSV.write(io, t, delim = delim, kwargs...)
     s = chop(String(take!(io)), tail = 1)
     clipboard(s)
-    printstring && println(s)
 
     if returnstring == true
       return s
@@ -152,7 +151,6 @@ function cliparray(t::AbstractVecOrMat; returnstring = false, delim='\t',
     CSV.write(io, Tables.table(t); delim=delim, header=header, kwargs...)
     s = chop(String(take!(io)), tail = 1)
     clipboard(s)
-    println(s)
 
     if returnstring == true
       return s
@@ -236,7 +234,6 @@ $name = \"\"\"
 \"\"\" |> IOBuffer |> CSV.File"""
     print(main_io, end_str)
     s = String(take!(main_io))
-    println(s)
 
     if returnstring == true
       return s
@@ -349,7 +346,6 @@ $name = \"\"\"
 \"\"\" |> IOBuffer |> CSV.File |> Tables.matrix"""
     print(main_io, end_str)
     s = String(take!(main_io))
-    println(s)
 
     if returnstring == true
       return s
@@ -396,7 +392,6 @@ $name = \"\"\"
 \"\"\" |> IOBuffer |> CSV.File |> Tables.matrix |> vec"""
     print(main_io, end_str)
     s = String(take!(main_io))
-    println(s)
 
     if returnstring == true
       return s
