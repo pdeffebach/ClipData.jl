@@ -1,7 +1,7 @@
 name = "ClipData"
 uuid = "39db22c5-8506-4ef9-b8dc-9d8ef5f2b71d"
 authors = ["Peter Deffebach <p.deffebach@gmail.com> and contributors"]
-version = "0.2.0"
+version = "0.2.1"
 
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
