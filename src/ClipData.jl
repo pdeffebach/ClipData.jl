@@ -193,7 +193,7 @@ function mwetable(; returnstring=false, name="df")
 end
 
 """
-    mwetable(t; name="df")
+    mwetable([io::IO=stdout], t; name="df")
 
 Create a Minimum Working Example (MWE) from
 an existing Tables.jl-compatible object.
@@ -218,7 +218,7 @@ a,b
 \"\"\" |> IOBuffer |> CSV.File
 ```
 """
-function mwetable(t; returnstring=false, name="df")
+function mwetable(io::IO, t; returnstring=false, name="df")
     main_io = IOBuffer()
     table_io = IOBuffer()
 
@@ -238,9 +238,12 @@ $name = \"\"\"
     if returnstring == true
       return s
     else
+      print(io, s)
       return nothing
     end
 end
+
+mwetable(t; kwargs...) = mwetable(stdout, t; kwargs...)
 
 function mwetable_helper(t::Symbol)
     t_name = QuoteNode(t)
@@ -308,7 +311,7 @@ function mwearray(; returnstring=false, name=nothing)
 end
 
 """
-    mwearray(t::AbstractMatrix; name=:X)
+    mwearray([io::IO=stdout], t::AbstractMatrix; name=:X)
 
 Create a Minimum Working Example (MWE) from
 a `Matrix`. `mwearray`
@@ -330,7 +333,7 @@ X = \"\"\"
 \"\"\" |> IOBuffer |> CSV.File |> Tables.matrix
 ```
 """
-function mwearray(t::AbstractMatrix; returnstring=false, name=:X)
+function mwearray(io::IO, t::AbstractMatrix; returnstring=false, name=:X)
     main_io = IOBuffer()
     array_io = IOBuffer()
 
@@ -350,12 +353,13 @@ $name = \"\"\"
     if returnstring == true
       return s
     else
+      print(io, s)
       return nothing
     end
 end
 
 """
-    mwearray(t::AbstractVector; name=:x)
+    mwearray([io::IO=stdout], t::AbstractVector; name=:x)
 
 Create a Minimum Working Example (MWE) from
 a `Vector`. `mwearray`
@@ -374,7 +378,7 @@ x = \"\"\"
 \"\"\" |> IOBuffer |> CSV.File |> Tables.matrix |> vec
 ```
 """
-function mwearray(t::AbstractVector; returnstring=false, name=:x)
+function mwearray(io::IO, t::AbstractVector; returnstring=false, name=:x)
     main_io = IOBuffer()
     array_io = IOBuffer()
 
@@ -396,9 +400,12 @@ $name = \"\"\"
     if returnstring == true
       return s
     else
+      print(io, s)
       return nothing
     end
 end
+
+mwearray(t::Union{AbstractVector, AbstractMatrix}; kwargs...) = mwearray(stdout, t; kwargs...)
 
 function mwearray_helper(t::Symbol)
     t_name = QuoteNode(t)
