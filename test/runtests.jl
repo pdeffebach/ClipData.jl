@@ -3,6 +3,8 @@ using Test
 using InteractiveUtils: clipboard
 using Tables
 
+const ≅ = isequal
+
 @testset "cliptable" begin
     """
     a b
@@ -157,6 +159,59 @@ end
     myvector = [1, 2, 3, 4]
 
     @mwearray myvector
+end
+
+@testset "Kwargs with reading" begin
+    """
+    a,b
+    1,2
+    3,NA
+    """ |> clipboard
+    t = cliptable(; missingstring = "NA") |> Tables.columntable
+    @test t ≅ (; a = [1, 3], b = [2, missing])
+
+    """
+    a\tb
+    1\t2
+    3\t4
+    # a comment
+    """ |> clipboard
+    t = cliptable(; comment = "#") |> Tables.columntable
+    @test t == (; a = [1, 3], b = [2, 4])
+
+    """
+    a,b
+    1,2
+    3,NA
+    """ |> clipboard
+    t = cliptable(; limit = 1, header = true) |> Tables.columntable
+    @test t == (; a = [1], b = [2])
+
+    """
+    1,2
+    3,NA
+    """ |> clipboard
+    a = cliparray(; missingstring = "NA")
+    @test a ≅  [1 2; 3 missing]
+end
+
+@testset "Kwargs with writing" begin
+    t = (a = [1, 2], b = [3, 4])
+    cliptable(t; delim = ",")
+    @test clipboard() == "a,b\n1,3\n2,4"
+
+    cliptable(t; header = ["x", "y"])
+    @test clipboard() == "x\ty\n1\t3\n2\t4"
+
+    t = (a = [1.0, missing], b = [3, 4])
+    cliptable(t; missingstring = "NA", decimal = ',')
+
+    @test clipboard() == "a\tb\n1,0\t3\nNA\t4"
+
+    t = (a = [1, nothing], b = [missing, 4])
+    cliptable(t, missingstring="-1", transform=(col, val) -> something(val, missing))
+
+    @test clipboard() == "a\tb\n1\t-1\n-1\t4"
 end
 
 
