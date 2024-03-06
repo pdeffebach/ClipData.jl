@@ -109,7 +109,7 @@ a   b
 """
 function cliptable(t; returnstring = false, delim = '\t', kwargs...)
     io = IOBuffer()
-    CSV.write(io, t, delim = delim, kwargs...)
+    CSV.write(io, t; delim = delim, kwargs...)
     s = chop(String(take!(io)), tail = 1)
     clipboard(s)
 
