@@ -159,4 +159,9 @@ end
     @mwearray myvector
 end
 
-
+@testset "kwargs" begin
+    t = (a = [1, nothing], b = [missing, 4])
+    cliptable(t, missingstring="-1", transform=(col, val) -> something(val, missing))
+    
+    @test clipboard() == "a\tb\n1\t-1\n-1\t4"
+end
