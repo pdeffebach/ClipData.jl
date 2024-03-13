@@ -84,11 +84,19 @@ a,b
 
     @test s == s_correct
 
-
     t = (a = [1, 3], b = [2, 4])
     s = mwetable(t; returnstring = true)
-
     @test s == s_correct
+
+    # Tests the default printing to stdout
+    io = IOBuffer()
+    mwetable(io, t; returnstring=false)
+    @test String(take!(io)) == s_correct
+
+    io = IOBuffer()
+    cliptable(t)
+    mwetable(io; returnstring=false)
+    @test String(take!(io)) == s_correct
 end
 
 @testset "mwearray" begin
@@ -107,11 +115,19 @@ X = \"\"\"
 
     @test s == s_correct
 
-
     t = [1 2; 3 4]
     s = mwearray(t; returnstring = true)
 
     @test s == s_correct
+
+    io = IOBuffer()
+    mwearray(io, t; returnstring=false)
+    @test String(take!(io)) == s_correct
+
+    io = IOBuffer()
+    cliparray(t)
+    mwearray(io)
+    @test String(take!(io)) == s_correct
 
     """
     1
@@ -137,6 +153,17 @@ x = \"\"\"
 
     s = mwearray(x; returnstring=true)
     @test s == s_correct
+
+    # Tests the default printing to stdout
+    io = IOBuffer()
+    mwearray(io, x; returnstring=false)
+    @test String(take!(io)) == s_correct
+
+    io = IOBuffer()
+    cliparray(x)
+    mwearray(io)
+    @test String(take!(io)) == s_correct
+
 end
 
 @testset "@mwetable" begin

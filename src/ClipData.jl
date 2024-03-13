@@ -160,14 +160,15 @@ function cliparray(t::AbstractVecOrMat; returnstring = false, delim='\t',
 end
 
 """
-    mwetable(; name="df")
+    mwetable([io::IO=stdout]; name="df")
 
 Create a Minimum Working Example (MWE) using
 the clipboard. `tablmwe` prints out a multi-line
 comma-separated string and provides the necessary
 code to read that string using `CSV.File`.
 The object is assigned the name given by
-`name` (default `"df"`).
+`name` (default `"df"`). Prints to `io`,
+which is by default `stdout`.
 
 # Examples
 
@@ -187,13 +188,16 @@ a,b
 ```
 
 """
-function mwetable(; returnstring=false, name="df")
+function mwetable(io::IO; returnstring=false, name="df")
     t = cliptable()
-    mwetable(t, returnstring=returnstring, name=name)
+    mwetable(io, t, returnstring=returnstring, name=name)
 end
 
+mwetable(; kwargs...) = mwetable(stdout; kwargs...)
+
+
 """
-    mwetable(t; name="df")
+    mwetable([io::IO=stdout], t; name="df")
 
 Create a Minimum Working Example (MWE) from
 an existing Tables.jl-compatible object.
@@ -201,7 +205,8 @@ an existing Tables.jl-compatible object.
 comma-separated string and provides the necessary
 code to read that string using `CSV.File`.
 The object is assigned the name given by
-`name` (default `:df`).
+`name` (default `:df`). Prints to `io`,
+which is by default `stdout`.
 
 # Examples
 
@@ -218,7 +223,7 @@ a,b
 \"\"\" |> IOBuffer |> CSV.File
 ```
 """
-function mwetable(t; returnstring=false, name="df")
+function mwetable(io::IO, t; returnstring=false, name="df")
     main_io = IOBuffer()
     table_io = IOBuffer()
 
@@ -238,9 +243,12 @@ $name = \"\"\"
     if returnstring == true
       return s
     else
+      print(io, s)
       return nothing
     end
 end
+
+mwetable(t; kwargs...) = mwetable(stdout, t; kwargs...)
 
 function mwetable_helper(t::Symbol)
     t_name = QuoteNode(t)
@@ -256,7 +264,8 @@ an existing Tables.jl-compatible object.
 comma-separated string and provides the necessary
 code to read that string using `CSV.File`. The name
 assigned to the object in the MWE is the
-same as the name of the input object.
+same as the name of the input object. Prints
+to `stdout`.
 
 # Examples
 
@@ -278,13 +287,14 @@ macro mwetable(t)
 end
 
 """
-    mwearray(; name=:X)
+    mwearray([io::IO=stdout]; name=:X)
 
 Create a Minimum Working Example (MWE) from
 the clipboard to create an array. `mwearray`
 returns the a multi-line string with the
 code necessary to read the string stored in
-clipboard as a `Vector` or `Matrix`.
+clipboard as a `Vector` or `Matrix`. Prints to `io`,
+which is by default `stdout`.
 
 # Examples
 
@@ -301,19 +311,22 @@ X = \"\"\"
 \"\"\" |> IOBuffer |> CSV.File |> Tables.matrix
 ```
 """
-function mwearray(; returnstring=false, name=nothing)
+function mwearray(io::IO; returnstring=false, name=nothing)
     t = cliparray()
     name= t isa AbstractVector ? :x : :X
-    mwearray(t, returnstring=returnstring, name=name)
+    mwearray(io, t, returnstring=returnstring, name=name)
 end
 
+mwearray(; kwargs...) = mwearray(stdout; kwargs...)
+
 """
-    mwearray(t::AbstractMatrix; name=:X)
+    mwearray([io::IO=stdout], t::AbstractMatrix; name=:X)
 
 Create a Minimum Working Example (MWE) from
 a `Matrix`. `mwearray`
 returns the a multi-line string with the
-code necessary to recreate `t`.
+code necessary to recreate `t`. Prints to `io`,
+which is by default `stdout`.
 
 # Examples
 
@@ -330,7 +343,7 @@ X = \"\"\"
 \"\"\" |> IOBuffer |> CSV.File |> Tables.matrix
 ```
 """
-function mwearray(t::AbstractMatrix; returnstring=false, name=:X)
+function mwearray(io::IO, t::AbstractMatrix; returnstring=false, name=:X)
     main_io = IOBuffer()
     array_io = IOBuffer()
 
@@ -350,17 +363,19 @@ $name = \"\"\"
     if returnstring == true
       return s
     else
+      print(io, s)
       return nothing
     end
 end
 
 """
-    mwearray(t::AbstractVector; name=:x)
+    mwearray([io::IO=stdout], t::AbstractVector; name=:x)
 
 Create a Minimum Working Example (MWE) from
 a `Vector`. `mwearray`
 returns the a multi-line string with the
-code necessary to recreate `t`.
+code necessary to recreate `t`. Prints to `io`,
+which is by default `stdout`.
 
 # Example
 
@@ -374,7 +389,7 @@ x = \"\"\"
 \"\"\" |> IOBuffer |> CSV.File |> Tables.matrix |> vec
 ```
 """
-function mwearray(t::AbstractVector; returnstring=false, name=:x)
+function mwearray(io::IO, t::AbstractVector; returnstring=false, name=:x)
     main_io = IOBuffer()
     array_io = IOBuffer()
 
@@ -396,9 +411,12 @@ $name = \"\"\"
     if returnstring == true
       return s
     else
+      print(io, s)
       return nothing
     end
 end
+
+mwearray(t::Union{AbstractVector, AbstractMatrix}; kwargs...) = mwearray(stdout, t; kwargs...)
 
 function mwearray_helper(t::Symbol)
     t_name = QuoteNode(t)
@@ -410,7 +428,8 @@ end
 
 Create a Minimum Working Example (MWE)
 from a `Vector` or `Matrix` with the same
-name as the object in the Julia session.
+name as the object in the Julia session. Prints
+to `stdout`.
 
 # Examples
 
